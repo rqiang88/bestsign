@@ -1,14 +1,35 @@
 module Bestsign
   module Helper
     module Request
+      
       def default_url_params
         {
-          developer_id: config.developer_id,
+          developerId: configurate.developer_id,
           rtick: rtick,
           signType: 'rsa'
         }
       end
 
+      def send_by_template_params
+        {
+          dpi: "120",
+          varNames: 'date,sign',
+          isAllowChangeSignaturePosition: "0", 
+          isDrawSignatureImage: "1", 
+          signatureImageName: "default",
+          version: "2"
+        }
+      end
+
+      def default_request_params
+        {
+          account: configurate.account,
+          tid: configurate.tid
+        }
+      end
+
+      alias_method :create_contract_pdf_params, :default_request_params
+      alias_method :create_by_template_params,  :default_request_params
 
       private
 
@@ -17,12 +38,6 @@ module Bestsign
         [Time.now.to_i, number] * ''
       end
 
-      def change_params params
-        data = params.sort.map do |k, v|
-          "#{k}=#{v}" if v.present?
-        end
-        data.compact * ''
-      end
     end
   end
 end
